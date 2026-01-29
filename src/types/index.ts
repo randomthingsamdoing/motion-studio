@@ -3,35 +3,47 @@ import qwenLogo from '../assets/logos/qwen.jpeg';
 import glmLogo from '../assets/logos/glm.webp';
 import deepseekLogo from '../assets/logos/deepseek.webp';
 import kimiLogo from '../assets/logos/kimi.webp';
+import geminiLogo from '../assets/logos/gemini.png';
 
 // AI Model selection
-export type AIModel = 'gpt-oss-120b' | 'qwen3-coder' | 'glm-4.5-air' | 'deepseek-r1' | 'kimi-k2';
+export type AIModel = 'gemini-2.5-flash' | 'gpt-oss-120b' | 'qwen3-coder' | 'glm-4.5-air' | 'deepseek-r1' | 'kimi-k2';
 
 export const AI_MODELS = {
+  'gemini-2.5-flash': {
+    id: 'gemini-2.5-flash',
+    name: 'Gemini 2.5 Flash',
+    logo: geminiLogo,
+    provider: 'gemini' as const
+  },
   'gpt-oss-120b': {
     id: 'openai/gpt-oss-120b:free',
     name: 'GPT OSS 120b',
-    logo: gptLogo
+    logo: gptLogo,
+    provider: 'openrouter' as const
   },
   'qwen3-coder': {
     id: 'qwen/qwen3-coder:free',
     name: 'Qwen 3 Coder',
-    logo: qwenLogo
+    logo: qwenLogo,
+    provider: 'openrouter' as const
   },
   'glm-4.5-air': {
     id: 'z-ai/glm-4.5-air:free',
     name: 'GLM 4.5 Air',
-    logo: glmLogo
+    logo: glmLogo,
+    provider: 'openrouter' as const
   },
   'deepseek-r1': {
     id: 'deepseek/deepseek-r1-0528:free',
     name: 'Deepseek R1',
-    logo: deepseekLogo
+    logo: deepseekLogo,
+    provider: 'openrouter' as const
   },
   'kimi-k2': {
     id: 'moonshotai/kimi-k2:free',
     name: 'Kimi K2',
-    logo: kimiLogo
+    logo: kimiLogo,
+    provider: 'openrouter' as const
   }
 } as const;
 

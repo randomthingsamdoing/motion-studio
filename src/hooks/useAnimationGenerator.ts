@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
-import type { Message, AIResponse, GenerationStatus, PropertySchema } from '../types';
-import { generateAnimationCode, refineAnimationCode } from '../services/openrouter';
+import type { Message, AIResponse, GenerationStatus, PropertySchema, AIModel } from '../types';
+import { AI_MODELS } from '../types';
+import * as openrouterService from '../services/openrouter';
+import * as geminiService from '../services/gemini';
 
 interface UseAnimationGeneratorReturn {
     // State
@@ -9,13 +11,13 @@ interface UseAnimationGeneratorReturn {
     status: GenerationStatus;
     error: string | null;
     conversationHistory: Message[];
-    selectedModel: import('../types').AIModel;
+    selectedModel: AIModel;
     properties: PropertySchema[];
 
     // Actions
-    generate: (prompt: string, model: import('../types').AIModel) => Promise<boolean>;
-    refine: (refinement: string, model: import('../types').AIModel) => Promise<void>;
-    setSelectedModel: (model: import('../types').AIModel) => void;
+    generate: (prompt: string, model: AIModel) => Promise<boolean>;
+    refine: (refinement: string, model: AIModel) => Promise<void>;
+    setSelectedModel: (model: AIModel) => void;
     updateCode: (newCode: string) => void;
     reset: () => void;
 }
@@ -26,7 +28,7 @@ export function useAnimationGenerator(): UseAnimationGeneratorReturn {
     const [status, setStatus] = useState<GenerationStatus>('idle');
     const [error, setError] = useState<string | null>(null);
     const [conversationHistory, setConversationHistory] = useState<Message[]>([]);
-    const [selectedModel, setSelectedModel] = useState<import('../types').AIModel>('gpt-oss-120b');
+    const [selectedModel, setSelectedModel] = useState<AIModel>('gemini-2.5-flash');
     const [properties, setProperties] = useState<PropertySchema[]>([]);
 
     const handleResponse = useCallback((response: AIResponse, history: Message[]) => {
@@ -44,12 +46,16 @@ export function useAnimationGenerator(): UseAnimationGeneratorReturn {
         setStatus('error');
     }, []);
 
-    const generate = useCallback(async (prompt: string, model: import('../types').AIModel): Promise<boolean> => {
+    const generate = useCallback(async (prompt: string, model: AIModel): Promise<boolean> => {
         setStatus('generating');
         setError(null);
 
         try {
-            const { response, updatedHistory } = await generateAnimationCode(prompt, model, []);
+            // Route to the correct service based on model provider
+            const provider = AI_MODELS[model].provider;
+            const service = provider === 'gemini' ? geminiService : openrouterService;
+
+            const { response, updatedHistory } = await service.generateAnimationCode(prompt, model, []);
             handleResponse(response, updatedHistory);
             return true;
         } catch (err) {
@@ -58,12 +64,16 @@ export function useAnimationGenerator(): UseAnimationGeneratorReturn {
         }
     }, [handleResponse, handleError]);
 
-    const refine = useCallback(async (refinement: string, model: import('../types').AIModel) => {
+    const refine = useCallback(async (refinement: string, model: AIModel) => {
         setStatus('generating');
         setError(null);
 
         try {
-            const { response, updatedHistory } = await refineAnimationCode(refinement, model, conversationHistory);
+            // Route to the correct service based on model provider
+            const provider = AI_MODELS[model].provider;
+            const service = provider === 'gemini' ? geminiService : openrouterService;
+
+            const { response, updatedHistory } = await service.refineAnimationCode(refinement, model, conversationHistory);
             handleResponse(response, updatedHistory);
         } catch (err) {
             handleError(err);
