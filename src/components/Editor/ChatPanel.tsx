@@ -14,7 +14,59 @@ interface ChatPanelProps {
 
 export function ChatPanel({ messages, status, selectedModel, onRefine, onBack, onShowProperties }: ChatPanelProps) {
     const [input, setInput] = useState('');
+    const [isListening, setIsListening] = useState(false);
+    const recognitionRef = useRef<any>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const toggleListening = useCallback(() => {
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+            alert('Your browser does not support speech recognition. Try Chrome or Safari.');
+            return;
+        }
+
+        if (isListening) {
+            if (recognitionRef.current) {
+                recognitionRef.current.stop();
+            }
+            setIsListening(false);
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+        recognitionRef.current = recognition;
+
+        // Capture current input to append to
+        const startValue = input.trim();
+
+        recognition.onstart = () => {
+            setIsListening(true);
+        };
+
+        recognition.onresult = (event: any) => {
+            const currentTranscript = Array.from(event.results)
+                .map((result: any) => result[0])
+                .map((result: any) => result.transcript)
+                .join('');
+
+            setInput(startValue ? `${startValue} ${currentTranscript}` : currentTranscript);
+        };
+
+        recognition.onerror = (event: any) => {
+            console.error('Speech recognition error:', event.error);
+            setIsListening(false);
+        };
+
+        recognition.onend = () => {
+            setIsListening(false);
+        };
+
+        recognition.start();
+    }, [isListening, input]);
 
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
@@ -94,10 +146,28 @@ export function ChatPanel({ messages, status, selectedModel, onRefine, onBack, o
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Make the ball blue..."
+                        placeholder={isListening ? "Listening..." : "Make the ball blue..."}
                         rows={2}
                         disabled={status === 'generating'}
                     />
+                    <button
+                        className={`chat-panel__voice-btn ${isListening ? 'is-listening' : ''}`}
+                        onClick={toggleListening}
+                        disabled={status === 'generating'}
+                        title="Voice Input"
+                    >
+                        {isListening ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect>
+                            </svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                                <path d="M19 10v1a7 7 0 0 1-14 0v-1"></path>
+                                <line x1="12" x2="12" y1="19" y2="22"></line>
+                            </svg>
+                        )}
+                    </button>
                     <button
                         className="chat-panel__send-btn"
                         onClick={handleSubmit}
