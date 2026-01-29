@@ -1,0 +1,104 @@
+.animation-preview {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.animation-preview__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-3) var(--spacing-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.animation-preview__title {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.animation-preview__actions {
+    display: flex;
+    gap: var(--spacing-2);
+}
+
+.animation-preview__action-btn {
+    padding: var(--spacing-1) var(--spacing-2);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.animation-preview__action-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.animation-preview__content {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-bg-tertiary);
+}
+
+.animation-preview__iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: var(--color-bg-tertiary);
+}
+
+.animation-preview__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-4);
+    color: var(--color-text-muted);
+}
+
+.animation-preview__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: var(--spacing-8);
+}
+
+.animation-preview__empty-icon {
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+.animation-preview__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-6);
+    color: var(--color-error);
+    text-align: center;
+}
+
+.animation-preview__error-title {
+    font-weight: 500;
+}
+
+.animation-preview__error-message {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    max-width: 300px;
+}

@@ -1,0 +1,76 @@
+.prompt-input {
+    width: 100%;
+    max-width: 600px;
+}
+
+.prompt-input__textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: var(--spacing-4);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    resize: vertical;
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.prompt-input__textarea::placeholder {
+    color: var(--color-text-muted);
+}
+
+.prompt-input__textarea:hover {
+    border-color: var(--color-border-focus);
+}
+
+.prompt-input__textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-glow);
+}
+
+.prompt-input__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-3);
+}
+
+.prompt-input__hint {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.prompt-input__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-6);
+    background: linear-gradient(135deg, var(--color-accent) 0%, #8b5cf6 100%);
+    border: none;
+    border-radius: var(--radius-md);
+    color: white;
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-base), opacity var(--transition-base);
+}
+
+.prompt-input__button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
+}
+
+.prompt-input__button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.prompt-input__button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
